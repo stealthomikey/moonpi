@@ -116,10 +116,11 @@ def picture_upload():
         if user_name in user_defined_names:
             print("User name already in use!")
             return  # Exit function if name already in use
-        # Add the user's name to the list of user-defined names
-        user_defined_names.append(user_name)
-        # Save user data to CSV file
-        save_user_data()
+        else:
+            # Add the user's name to the list of user-defined names
+            user_defined_names.append(user_name)
+            # Save user data to CSV file
+            save_user_data()
         # Set the destination directory for the picture file
         destination_dir = "pictures"
         # Check if the destination directory exists, if not create it
@@ -135,6 +136,7 @@ def picture_upload():
     # Simulate some processing time
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
+
 
 # Function to save user data to CSV file
 def save_user_data():
