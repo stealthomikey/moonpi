@@ -1,10 +1,14 @@
 from sense_hat import SenseHat
 import os
 import shutil
+import csv
 import time
 
 # Initialize Sense HAT
 sense = SenseHat()
+
+# File paths for saving user data
+user_data_file = "user_data.csv"
 
 # List of options
 options = ["name", "movie upload", "picture upload"]
@@ -66,6 +70,8 @@ def movie_upload():
         user_name = input("Enter your name: ")
         # Add the user's name to the list of user-defined names
         user_defined_names.append(user_name)
+        # Save user data to CSV file
+        save_user_data()
         # Set the destination directory for the movie file
         destination_dir = os.path.join("movies", user_name)
         # Check if the destination directory exists, if not create it
@@ -90,8 +96,14 @@ def picture_upload():
     if os.path.exists(picture_path):
         # Get the user's name
         user_name = input("Enter your name: ")
+        # Check if the user's name already exists
+        if user_name in user_defined_names:
+            print("User name already in use!")
+            return  # Exit function if name already in use
         # Add the user's name to the list of user-defined names
         user_defined_names.append(user_name)
+        # Save user data to CSV file
+        save_user_data()
         # Set the destination directory for the picture file
         destination_dir = os.path.join("pictures", user_name)
         # Check if the destination directory exists, if not create it
@@ -107,6 +119,26 @@ def picture_upload():
     # Simulate some processing time
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
+
+# Function to save user data to CSV file
+def save_user_data():
+    with open(user_data_file, "w", newline="") as file:
+        writer = csv.writer(file)
+        writer.writerow(["UserDefinedNames"])
+        for name in user_defined_names:
+            writer.writerow([name])
+
+# Function to load user data from CSV file
+def load_user_data():
+    if os.path.exists(user_data_file):
+        with open(user_data_file, "r") as file:
+            reader = csv.reader(file)
+            next(reader)  # Skip header row
+            for row in reader:
+                user_defined_names.append(row[0])
+
+# Load user data when the application starts
+load_user_data()
 
 # Main loop
 while True:
