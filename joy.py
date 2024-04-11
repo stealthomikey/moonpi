@@ -8,44 +8,35 @@ sleep(0.1)
 event = sense.stick.wait_for_event()
 print("The joystick was {} {}".format(event.action, event.direction))
 
-
-import pygame
+from sense_hat import SenseHat
 import time
 
-# Initialize pygame
-pygame.init()
+# Initialize Sense HAT
+sense = SenseHat()
 
-# Function to display options
-def display_options(options):
-    for option in options:
-        print(option)
+# List of options
+options = ["name", "movie", "picture"]
 
-# Main function
-def main():
-    options = ["name", "movie", "picture"]
-    selected_option = 0
-    
-    while True:
-        # Display options
-        display_options(options)
-        
-        # Wait for joystick input (simulate for demonstration)
-        time.sleep(0.5)
-        
-        # Simulate joystick input (replace with actual joystick input)
-        joystick_input = input("Enter joystick input (up/down): ")
-        
-        # Handle joystick input
-        if joystick_input == "up":
-            selected_option = (selected_option - 1) % len(options)
-        elif joystick_input == "down":
-            selected_option = (selected_option + 1) % len(options)
-        elif joystick_input == "select":
-            print("You selected:", options[selected_option])
-            # Additional logic to display more options or perform actions
-            
-        # Clear screen (for demonstration)
-        print("\033c", end="")  # Clear screen escape sequence (works in most terminals)
+# Index of the currently selected option
+selected_option_index = 0
 
-if __name__ == "__main__":
-    main()
+# Function to display the current option
+def display_option(option):
+    sense.show_message(option)
+
+# Main loop
+while True:
+    # Display the current option
+    display_option(options[selected_option_index])
+
+    # Wait for joystick input
+    for event in sense.stick.get_events():
+        if event.action == "pressed":
+            if event.direction == "left":
+                selected_option_index = (selected_option_index - 1) % len(options)
+            elif event.direction == "right":
+                selected_option_index = (selected_option_index + 1) % len(options)
+            elif event.direction == "down":
+                print("You selected:", options[selected_option_index])
+                # Additional logic can be added here based on the selected option
+                # For now, it just prints the selected option
