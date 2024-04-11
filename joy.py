@@ -72,32 +72,37 @@ def select_name():
 # Function to upload and rename a movie
 def movie_upload():
     print("Movie upload:")
-    # Get the path of the movie file to upload
-    movie_path = input("Enter the path of the movie file to upload: ")
-    if os.path.exists(movie_path):
-        # Get the user's name
-        user_name = input("Enter your name: ")
-        # Add the user's name to the list of user-defined names
-        user_defined_names.append(user_name)
-        # Save user data to CSV file
-        save_user_data()
-        # Set the destination directory for the movie file
-        destination_dir = os.path.join("movies", user_name)
-        # Check if the destination directory exists, if not create it
-        if not os.path.exists(destination_dir):
-            os.makedirs(destination_dir)
-        # Get the new name for the movie file
-        new_movie_name = input("Enter the new name for the movie file: ")
-        # Copy the movie file to the destination directory with the new name
-        shutil.copy(movie_path, os.path.join(destination_dir, new_movie_name))
-        print("Movie uploaded successfully!")
-        # Set the last selected movie for this user
-        last_selected_movies[user_name] = new_movie_name
+    # Get the user's name
+    user_name = input("Enter your name: ")
+    # Check if the user's name exists
+    if user_name in user_defined_names:
+        # Get the path of the movie file to upload
+        movie_path = input("Enter the path of the movie file to upload: ")
+        if os.path.exists(movie_path):
+            # Add the user's name to the list of user-defined names (if not already added)
+            user_defined_names.append(user_name)
+            # Save user data to CSV file
+            save_user_data()
+            # Set the destination directory for the movie file
+            destination_dir = os.path.join("movies", user_name)
+            # Check if the destination directory exists, if not create it
+            if not os.path.exists(destination_dir):
+                os.makedirs(destination_dir)
+            # Get the new name for the movie file
+            new_movie_name = input("Enter the new name for the movie file: ")
+            # Copy the movie file to the destination directory with the new name
+            shutil.copy(movie_path, os.path.join(destination_dir, new_movie_name))
+            print("Movie uploaded successfully!")
+            # Set the last selected movie for this user
+            last_selected_movies[user_name] = new_movie_name
+        else:
+            print("File not found!")
     else:
-        print("File not found!")
+        print("User not found!")
     # Simulate some processing time
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
+
 
 # Function to upload and rename a picture
 def picture_upload():
