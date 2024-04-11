@@ -105,12 +105,12 @@ def picture_upload():
         # Save user data to CSV file
         save_user_data()
         # Set the destination directory for the picture file
-        destination_dir = os.path.join("pictures", user_name)
+        destination_dir = "pictures"
         # Check if the destination directory exists, if not create it
         if not os.path.exists(destination_dir):
             os.makedirs(destination_dir)
-        # Get the new name for the picture file
-        new_picture_name = input("Enter the new name for the picture file: ")
+        # Get the new name for the picture file (user_name)
+        new_picture_name = user_name + os.path.splitext(picture_path)[1]  # Use user_name as file name
         # Copy the picture file to the destination directory with the new name
         shutil.copy(picture_path, os.path.join(destination_dir, new_picture_name))
         print("Picture uploaded successfully!")
@@ -119,6 +119,7 @@ def picture_upload():
     # Simulate some processing time
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
+
 
 # Function to save user data to CSV file
 def save_user_data():
