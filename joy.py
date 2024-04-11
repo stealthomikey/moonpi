@@ -1,44 +1,111 @@
 from sense_hat import SenseHat
+import os
+import shutil
 import time
 
 # Initialize Sense HAT
 sense = SenseHat()
 
 # List of options
-options = ["name", "movie", "picture"]
+options = ["name", "movie upload", "picture upload"]
 
 # Index of the currently selected option
 selected_option_index = 0
+
+# List to store user-defined names
+user_defined_names = []
 
 # Function to display the current option
 def display_option(option):
     sense.show_message(option)
 
-# Function to select a name
+# Function to select a name and play movies
 def select_name():
     print("Select a name:")
-    # Simulate selecting a name (replace this with your actual logic)
-    selected_name = input("Enter a name: ")
-    print("You selected:", selected_name)
-    time.sleep(2)  # Simulate some processing time
+    # Display user-defined names
+    for name in user_defined_names:
+        print(name)
+    # Get the user's name
+    user_name = input("Enter your name: ")
+    # Check if the user's name exists
+    if user_name in user_defined_names:
+        # Set the directory for the user's movies
+        movie_dir = os.path.join("movies", user_name)
+        # Check if the movie directory exists
+        if os.path.exists(movie_dir):
+            # List the user's movies
+            user_movies = os.listdir(movie_dir)
+            print("Your movies:")
+            for i, movie in enumerate(user_movies, 1):
+                print(f"{i}. {movie}")
+            # Ask the user to select a movie
+            movie_index = int(input("Select a movie: ")) - 1
+            # Check if the selected index is valid
+            if 0 <= movie_index < len(user_movies):
+                selected_movie = user_movies[movie_index]
+                print(f"Playing {selected_movie}...")
+                # Simulate playing the movie (replace this with actual playback logic)
+                time.sleep(5)  # Simulate playback time
+            else:
+                print("Invalid movie selection!")
+        else:
+            print("You don't have any movies yet!")
+    else:
+        print("User not found!")
+    # Simulate some processing time
+    time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
 
-# Function to select a movie
-def select_movie():
-    print("Select a movie:")
-    # Simulate selecting a movie (replace this with your actual logic)
-    selected_movie = input("Enter a movie: ")
-    print("You selected:", selected_movie)
-    time.sleep(2)  # Simulate some processing time
+# Function to upload and rename a movie
+def movie_upload():
+    print("Movie upload:")
+    # Get the path of the movie file to upload
+    movie_path = input("Enter the path of the movie file to upload: ")
+    if os.path.exists(movie_path):
+        # Get the user's name
+        user_name = input("Enter your name: ")
+        # Add the user's name to the list of user-defined names
+        user_defined_names.append(user_name)
+        # Set the destination directory for the movie file
+        destination_dir = os.path.join("movies", user_name)
+        # Check if the destination directory exists, if not create it
+        if not os.path.exists(destination_dir):
+            os.makedirs(destination_dir)
+        # Get the new name for the movie file
+        new_movie_name = input("Enter the new name for the movie file: ")
+        # Copy the movie file to the destination directory with the new name
+        shutil.copy(movie_path, os.path.join(destination_dir, new_movie_name))
+        print("Movie uploaded successfully!")
+    else:
+        print("File not found!")
+    # Simulate some processing time
+    time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
 
-# Function to select a picture
-def select_picture():
-    print("Select a picture:")
-    # Simulate selecting a picture (replace this with your actual logic)
-    selected_picture = input("Enter a picture: ")
-    print("You selected:", selected_picture)
-    time.sleep(2)  # Simulate some processing time
+# Function to upload and rename a picture
+def picture_upload():
+    print("Picture upload:")
+    # Get the path of the picture file to upload
+    picture_path = input("Enter the path of the picture file to upload: ")
+    if os.path.exists(picture_path):
+        # Get the user's name
+        user_name = input("Enter your name: ")
+        # Add the user's name to the list of user-defined names
+        user_defined_names.append(user_name)
+        # Set the destination directory for the picture file
+        destination_dir = os.path.join("pictures", user_name)
+        # Check if the destination directory exists, if not create it
+        if not os.path.exists(destination_dir):
+            os.makedirs(destination_dir)
+        # Get the new name for the picture file
+        new_picture_name = input("Enter the new name for the picture file: ")
+        # Copy the picture file to the destination directory with the new name
+        shutil.copy(picture_path, os.path.join(destination_dir, new_picture_name))
+        print("Picture uploaded successfully!")
+    else:
+        print("File not found!")
+    # Simulate some processing time
+    time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
 
 # Main loop
@@ -56,7 +123,7 @@ while True:
             elif event.direction == "down":
                 if options[selected_option_index] == "name":
                     select_name()
-                elif options[selected_option_index] == "movie":
-                    select_movie()
-                elif options[selected_option_index] == "picture":
-                    select_picture()
+                elif options[selected_option_index] == "movie upload":
+                    movie_upload()
+                elif options[selected_option_index] == "picture upload":
+                    picture_upload()
