@@ -78,6 +78,7 @@ for y in range(8):
     for x in range(8):
         color = grid[y][x]
         if color is not None:
-            sense.set_pixel(x, y, color[0], color[1], color[2])
+            r, g, b = color  # Unpack the color tuple
+            sense.set_pixel(x, y, r, g, b)
         else:
             sense.set_pixel(x, y, 0, 0, 0)  # If no color detected, turn off the LED
