@@ -135,9 +135,12 @@ def picture_upload():
 def save_user_data():
     with open(user_data_file, "w", newline="") as file:
         writer = csv.writer(file)
-        writer.writerow(["UserDefinedNames"])
+        writer.writerow(["UserDefinedNames", "LastSelectedMovies"])
         for name in user_defined_names:
-            writer.writerow([name])
+            # Get the last selected movie for the user or set a default value if not present
+            last_selected_movie = last_selected_movies.get(name, "default_movie.mp4")
+            writer.writerow([name, last_selected_movie])
+
 
 # Function to load user data from CSV file
 def load_user_data():
@@ -147,6 +150,9 @@ def load_user_data():
             next(reader)  # Skip header row
             for row in reader:
                 user_defined_names.append(row[0])
+                # Load last selected movie for the user, or use a default value if not present
+                last_selected_movies[row[0]] = row[1] if len(row) > 1 else "default_movie.mp4"
+
 
 # Load user data when the application starts
 load_user_data()
