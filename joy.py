@@ -91,8 +91,8 @@ def movie_upload():
         # Copy the movie file to the destination directory with the new name
         shutil.copy(movie_path, os.path.join(destination_dir, new_movie_name))
         print("Movie uploaded successfully!")
-        # Set the default movie for this user
-        last_selected_movies[user_name] = new_movie_name +  ".mp4"  
+        # Set the last selected movie for this user
+        last_selected_movies[user_name] = new_movie_name
     else:
         print("File not found!")
     # Simulate some processing time
@@ -141,7 +141,6 @@ def save_user_data():
             last_selected_movie = last_selected_movies.get(name, "default_movie.mp4")
             writer.writerow([name, last_selected_movie])
 
-
 # Function to load user data from CSV file
 def load_user_data():
     if os.path.exists(user_data_file):
@@ -153,13 +152,8 @@ def load_user_data():
                 # Load last selected movie for the user, or use a default value if not present
                 last_selected_movies[row[0]] = row[1] if len(row) > 1 else "default_movie.mp4"
 
-
 # Load user data when the application starts
 load_user_data()
-
-# Set default movie for each user to "default_movie.mp4"
-for user_name in user_defined_names:
-    last_selected_movies.setdefault(user_name, "default_movie.mp4")
 
 # Main loop
 while True:
