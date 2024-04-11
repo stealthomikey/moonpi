@@ -6,17 +6,9 @@ from PIL import Image
 sense = SenseHat()
 sense.clear()
 
-# Load the image
+# Open the image
 im = Image.open('flag.jpg', 'r')
 width, height = im.size
-pixel_values = list(im.getdata())
-
-# Convert pixel data into a 2D list
-pixels = [[None] * width for _ in range(height)]
-for i, pixel in enumerate(pixel_values):
-    x = i % width
-    y = i // width
-    pixels[y][x] = pixel
 
 # Define boundary regions
 topy1 = int(height * 0.875)
@@ -39,38 +31,32 @@ leftright_items = 6
 top_step = width // topbot_items
 left_step = height // leftright_items
 
-# Define boundary regions
-top_bounds = [(i * top_step, (i + 1) * top_step) for i in range(topbot_items)]
-bottom_bounds = [(i * top_step, (i + 1) * top_step) for i in range(topbot_items)]
-left_bounds = [(i * left_step, (i + 1) * left_step) for i in range(leftright_items)]
-right_bounds = [(i * left_step, (i + 1) * left_step) for i in range(leftright_items)]
-
-# Reverse left and right boundaries
-left_bounds_reversed = list(reversed(left_bounds))
-right_bounds_reversed = list(reversed(right_bounds))
-
 # Initialize grid to store colors
 grid = [[None for _ in range(8)] for _ in range(8)]
 
-# Store most common colors in grid
-for i, bound in enumerate(top_bounds):
-    boundary_pixels = [pixels[y][x] for y in range(topy1, topy2) for x in range(bound[0], bound[1])]
-    common_color = Counter(boundary_pixels).most_common(1)[0][0]
+# Process boundary regions
+for i in range(topbot_items):
+    top_bound = (i * top_step, (i + 1) * top_step)
+    top_boundary_pixels = [im.getpixel((x, y)) for y in range(topy1, topy2) for x in range(top_bound[0], top_bound[1])]
+    common_color = Counter(top_boundary_pixels).most_common(1)[0][0]
     grid[0][i] = common_color
 
-for i, bound in enumerate(left_bounds_reversed):
-    boundary_pixels = [pixels[y][x] for y in range(bound[0], bound[1]) for x in range(leftx1, leftx2)]
-    common_color = Counter(boundary_pixels).most_common(1)[0][0]
+for i in range(leftright_items):
+    left_bound = (i * left_step, (i + 1) * left_step)
+    left_boundary_pixels = [im.getpixel((x, y)) for y in range(left_bound[0], left_bound[1]) for x in range(leftx1, leftx2)]
+    common_color = Counter(left_boundary_pixels).most_common(1)[0][0]
     grid[i + 1][0] = common_color
 
-for i, bound in enumerate(right_bounds_reversed):
-    boundary_pixels = [pixels[y][x] for y in range(bound[0], bound[1]) for x in range(rightx1, rightx2)]
-    common_color = Counter(boundary_pixels).most_common(1)[0][0]
+for i in range(leftright_items):
+    right_bound = (i * left_step, (i + 1) * left_step)
+    right_boundary_pixels = [im.getpixel((x, y)) for y in range(right_bound[0], right_bound[1]) for x in range(rightx1, rightx2)]
+    common_color = Counter(right_boundary_pixels).most_common(1)[0][0]
     grid[i + 1][7] = common_color
 
-for i, bound in enumerate(bottom_bounds):
-    boundary_pixels = [pixels[y][x] for y in range(bottomy1, bottomy2) for x in range(bound[0], bound[1])]
-    common_color = Counter(boundary_pixels).most_common(1)[0][0]
+for i in range(topbot_items):
+    bottom_bound = (i * top_step, (i + 1) * top_step)
+    bottom_boundary_pixels = [im.getpixel((x, y)) for y in range(bottomy1, bottomy2) for x in range(bottom_bound[0], bottom_bound[1])]
+    common_color = Counter(bottom_boundary_pixels).most_common(1)[0][0]
     grid[7][i] = common_color
 
 # Display grid on Sense HAT
