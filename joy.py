@@ -10,6 +10,9 @@ sense = SenseHat()
 # File paths for saving user data
 user_data_file = "user_data.csv"
 
+# Dictionary to store the last selected movie for each user
+last_selected_movies = {}
+
 # List of options
 options = ["name", "movie upload", "picture upload"]
 
@@ -33,6 +36,10 @@ def select_name():
     user_name = input("Enter your name: ")
     # Check if the user's name exists
     if user_name in user_defined_names:
+        if user_name in last_selected_movies:
+            print(f"Welcome back, {user_name}! Your last selected movie was: {last_selected_movies[user_name]}")
+        else:
+            print(f"Welcome, {user_name}!")
         # Set the directory for the user's movies
         movie_dir = os.path.join("movies", user_name)
         # Check if the movie directory exists
@@ -47,6 +54,8 @@ def select_name():
             # Check if the selected index is valid
             if 0 <= movie_index < len(user_movies):
                 selected_movie = user_movies[movie_index]
+                # Remember the last selected movie for this user
+                last_selected_movies[user_name] = selected_movie
                 print(f"Playing {selected_movie}...")
                 # Simulate playing the movie (replace this with actual playback logic)
                 time.sleep(5)  # Simulate playback time
@@ -82,6 +91,8 @@ def movie_upload():
         # Copy the movie file to the destination directory with the new name
         shutil.copy(movie_path, os.path.join(destination_dir, new_movie_name))
         print("Movie uploaded successfully!")
+        # Set the default movie for this user
+        last_selected_movies[user_name] = new_movie_name
     else:
         print("File not found!")
     # Simulate some processing time
@@ -120,7 +131,6 @@ def picture_upload():
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
 
-
 # Function to save user data to CSV file
 def save_user_data():
     with open(user_data_file, "w", newline="") as file:
@@ -140,6 +150,10 @@ def load_user_data():
 
 # Load user data when the application starts
 load_user_data()
+
+# Set default movie for each user to "default_movie.mp4"
+for user_name in user_defined_names:
+    last_selected_movies.setdefault(user_name, "default_movie.mp4")
 
 # Main loop
 while True:
