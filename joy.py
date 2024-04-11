@@ -92,7 +92,7 @@ def movie_upload():
         shutil.copy(movie_path, os.path.join(destination_dir, new_movie_name))
         print("Movie uploaded successfully!")
         # Set the default movie for this user
-        last_selected_movies[user_name] = new_movie_name
+        last_selected_movies[user_name] = new_movie_name +  ".mp4"  
     else:
         print("File not found!")
     # Simulate some processing time
