@@ -15,7 +15,7 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
 
 # Create an MQTT client instance
-client = mqtt.Client()
+client = mqtt.Client(transport='tcp')  # Explicitly specify the transport protocol
 
 # Assign callbacks
 client.on_connect = on_connect
@@ -26,18 +26,3 @@ client.connect(broker_address, port, 60)
 
 # Start the MQTT client loop to continuously listen for messages
 client.loop_forever()
-
->>> %Run receive.py
-Exception ignored in: <function Client.__del__ at 0x75e77a48>
-Traceback (most recent call last):
-  File "/home/pi/.local/lib/python3.9/site-packages/paho/mqtt/client.py", line 874, in __del__
-    self._reset_sockets()
-  File "/home/pi/.local/lib/python3.9/site-packages/paho/mqtt/client.py", line 1133, in _reset_sockets
-    self._sock_close()
-  File "/home/pi/.local/lib/python3.9/site-packages/paho/mqtt/client.py", line 1119, in _sock_close
-    if not self._sock:
-AttributeError: 'Client' object has no attribute '_sock'
-Traceback (most recent call last):
-  File "/home/pi/cm2110/moonpi/entertainmet/receive.py", line 18, in <module>
-    client = mqtt.Client()
-TypeError: __init__() missing 1 required positional argument: 'callback_api_version'
