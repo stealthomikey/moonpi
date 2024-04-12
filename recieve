@@ -1,28 +1,23 @@
 import paho.mqtt.client as mqtt
 
-# MQTT broker details
-broker_address = "192.168.1.186"  # Change this to your MQTT broker's address
-port = 1883  # Default MQTT port
-
-# Callback function to handle when the client connects to the MQTT broker
+# Define callback functions
 def on_connect(client, userdata, flags, rc):
-    print("Connected with result code " + str(rc))
-    # Subscribe to the testTopic topic
-    client.subscribe("testTopic")
+    print("Connected with result code "+str(rc))
+    # Subscribe to the topic
+    client.subscribe("topic/test")
 
-# Callback function to handle when a message is received from the MQTT broker
 def on_message(client, userdata, msg):
-    print(msg.topic + " " + str(msg.payload))
+    print(msg.topic+" "+str(msg.payload))
 
-# Create an MQTT client instance
-client = mqtt.Client(transport='tcp')  # Explicitly specify the transport protocol
+# Create MQTT client instance
+client = mqtt.Client()
 
-# Assign callbacks
+# Assign callback functions
 client.on_connect = on_connect
 client.on_message = on_message
 
-# Connect to the MQTT broker
-client.connect(broker_address, port, 60)
+# Connect to MQTT broker
+client.connect("mqtt.example.com", 1883, 60)
 
-# Start the MQTT client loop to continuously listen for messages
+# Loop forever to receive messages
 client.loop_forever()
