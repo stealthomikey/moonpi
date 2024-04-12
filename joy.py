@@ -1,3 +1,4 @@
+# Import statements
 from sense_hat import SenseHat
 import paho.mqtt.client as paho
 import sys
@@ -71,7 +72,6 @@ def select_name():
         print("User not found!")
     # Simulate some processing time
     time.sleep(2)
-    display_option(options[selected_option_index])  # Return to main navigation
 
 # Function to upload and rename a movie
 def movie_upload():
@@ -106,8 +106,6 @@ def movie_upload():
         print("User not found!")
     # Simulate some processing time
     time.sleep(2)
-    display_option(options[selected_option_index])  # Return to main navigation
-
 
 # Function to upload and rename a picture
 def picture_upload():
@@ -140,8 +138,6 @@ def picture_upload():
         print("File not found!")
     # Simulate some processing time
     time.sleep(2)
-    display_option(options[selected_option_index])  # Return to main navigation
-
 
 # Function to save user data to CSV file
 def save_user_data():
@@ -167,26 +163,6 @@ def load_user_data():
 # Load user data when the application starts
 load_user_data()
 
-# Main loop
-while True:
-    # Display the current option
-    display_option(options[selected_option_index])
-
-    # Wait for joystick input
-    for event in sense.stick.get_events():
-        if event.action == "pressed":
-            if event.direction == "left":
-                selected_option_index = (selected_option_index - 1) % len(options)
-            elif event.direction == "right":
-                selected_option_index = (selected_option_index + 1) % len(options)
-            elif event.direction == "down":
-                if options[selected_option_index] == "name":
-                    select_name()
-                elif options[selected_option_index] == "movie":
-                    movie_upload()
-                elif options[selected_option_index] == "pic":
-                    picture_upload()
-
 # Function to find the last selected movie for a specific user
 def find_last_movie_for_user(search_name):
     for name, last_movie in last_selected_movies.items():
@@ -194,22 +170,46 @@ def find_last_movie_for_user(search_name):
             print(f"The last selected movie for {name} was: {last_movie}")
             return
     print(f"No movie found for {search_name}")
-    
 
-def onMessage(client, userdata, msg):
-    print(msg.topic + ": " + msg.payload.decode())
-    
+# Function to handle joystick events and navigation
+def handle_navigation(event):
+    global selected_option_index
+    if event.action == "pressed":
+        if event.direction == "left":
+            selected_option_index = (selected_option_index - 1) % len(options)
+        elif event.direction == "right":
+            selected_option_index = (selected_option_index + 1) % len(options)
+        elif event.direction == "down":
+            if options[selected_option_index] == "name":
+                select_name()
+            elif options[selected_option_index] == "movie":
+                movie_upload()
+            elif options[selected_option_index] == "pic":
+                picture_upload()
+
+# MQTT on message callback
+def on_message(client, userdata, msg):
+    if msg.topic == "moonPi":
+        user_name = msg.payload.decode()
+        find_last_movie_for_user(user_name)
+
+# MQTT client setup
 client = paho.Client()
-client.on_message = onMessage
+client.on_message = on_message
 
+# MQTT connection to broker
 if client.connect("192.168.87.41", 1883, 60) != 0:
-    print("couldnt connect to broker")
+    print("Couldn't connect to broker")
     sys.exit(-1)
-    
+
+# MQTT subscribe to topic
 client.subscribe("moonPi")
 
-try:
-    client.loop_forever()
-except:
-    print("disconnecting")
-    
+# Main loop
+while True:
+    # Display the current option
+    display_option(options[selected_option_index])
+
+    # Wait for joystick input
+    for event in sense.stick.get_events():
+        handle_navigation(event)
