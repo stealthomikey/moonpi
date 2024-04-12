@@ -1,4 +1,6 @@
 from sense_hat import SenseHat
+import paho.mqtt.client as paho
+import sys
 import os
 import shutil
 import csv
@@ -14,7 +16,7 @@ user_data_file = "user_data.csv"
 last_selected_movies = {}
 
 # List of options
-options = ["name", "movie upload", "picture upload"]
+options = ["name", "movie", "pic"]
 
 # Index of the currently selected option
 selected_option_index = 0
@@ -25,7 +27,7 @@ user_defined_names = []
 # Function to display the current option
 def display_option(option):
     sense.show_message(option)
-
+    
 # Function to select a name and play movies
 def select_name():
     print("Select a name:")
@@ -71,7 +73,6 @@ def select_name():
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
 
-
 # Function to upload and rename a movie
 def movie_upload():
     print("Movie upload:")
@@ -106,7 +107,6 @@ def movie_upload():
     # Simulate some processing time
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
-
 
 
 # Function to upload and rename a picture
@@ -167,18 +167,6 @@ def load_user_data():
 # Load user data when the application starts
 load_user_data()
 
-# Function to find the last selected movie for a specific user
-def find_last_movie_for_user(search_name):
-    for name, last_movie in last_selected_movies.items():
-        if name.lower() == search_name.lower():
-            print(f"The last selected movie for {name} was: {last_movie}")
-            return
-    print(f"No movie found for {search_name}")
-
-# Display last movie for each user on launch
-for name, last_movie in last_selected_movies.items():
-    print(f"The last selected movie for {name} was: {last_movie}")
-
 # Main loop
 while True:
     # Display the current option
@@ -194,7 +182,34 @@ while True:
             elif event.direction == "down":
                 if options[selected_option_index] == "name":
                     select_name()
-                elif options[selected_option_index] == "movie upload":
+                elif options[selected_option_index] == "movie":
                     movie_upload()
-                elif options[selected_option_index] == "picture upload":
+                elif options[selected_option_index] == "pic":
                     picture_upload()
+
+# Function to find the last selected movie for a specific user
+def find_last_movie_for_user(search_name):
+    for name, last_movie in last_selected_movies.items():
+        if name.lower() == search_name.lower():
+            print(f"The last selected movie for {name} was: {last_movie}")
+            return
+    print(f"No movie found for {search_name}")
+    
+
+def onMessage(client, userdata, msg):
+    print(msg.topic + ": " + msg.payload.decode())
+    
+client = paho.Client()
+client.on_message = onMessage
+
+if client.connect("192.168.87.41", 1883, 60) != 0:
+    print("couldnt connect to broker")
+    sys.exit(-1)
+    
+client.subscribe("moonPi")
+
+try:
+    client.loop_forever()
+except:
+    print("disconnecting")
+    
