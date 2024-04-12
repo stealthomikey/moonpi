@@ -1,2 +1,15 @@
 link to youtube media player using python 
 https://youtu.be/45sPjuPJ3vs?si=-EB28kPJHfQ8_r8F
+Exception ignored in: <function Client.__del__ at 0x75e56a48>
+Traceback (most recent call last):
+  File "/home/pi/.local/lib/python3.9/site-packages/paho/mqtt/client.py", line 874, in __del__
+    self._reset_sockets()
+  File "/home/pi/.local/lib/python3.9/site-packages/paho/mqtt/client.py", line 1133, in _reset_sockets
+    self._sock_close()
+  File "/home/pi/.local/lib/python3.9/site-packages/paho/mqtt/client.py", line 1119, in _sock_close
+    if not self._sock:
+AttributeError: 'Client' object has no attribute '_sock'
+Traceback (most recent call last):
+  File "/home/pi/cm2110/moonpi/entertainmet/ttests.py", line 13, in <module>
+    client = mqtt.Client()
+TypeError: __init__() missing 1 required positional argument: 'callback_api_version'
