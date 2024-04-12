@@ -29,7 +29,7 @@ user_defined_names = []
 # Function to display the current option
 def display_option(option):
     sense.show_message(option)
-    
+
 # Function to select a name and play movies
 def select_name():
     print("Select a name:")
