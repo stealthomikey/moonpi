@@ -54,11 +54,13 @@ def select_name():
             # Check if the selected index is valid
             if 0 <= movie_index < len(user_movies):
                 selected_movie = user_movies[movie_index]
-                # Remember the last selected movie for this user
-                last_selected_movies[user_name] = selected_movie
                 print(f"Playing {selected_movie}...")
                 # Simulate playing the movie (replace this with actual playback logic)
                 time.sleep(5)  # Simulate playback time
+                # Remember the last selected movie for this user
+                last_selected_movies[user_name] = selected_movie
+                # Save the updated last selected movies to file
+                save_user_data()
             else:
                 print("Invalid movie selection!")
         else:
@@ -68,6 +70,7 @@ def select_name():
     # Simulate some processing time
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
+
 
 # Function to upload and rename a movie
 def movie_upload():
