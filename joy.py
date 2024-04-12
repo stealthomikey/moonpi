@@ -79,10 +79,6 @@ def movie_upload():
         # Get the path of the movie file to upload
         movie_path = input("Enter the path of the movie file to upload: ")
         if os.path.exists(movie_path):
-            # Add the user's name to the list of user-defined names (if not already added)
-            user_defined_names.append(user_name)
-            # Save user data to CSV file
-            save_user_data()
             # Set the destination directory for the movie file
             destination_dir = os.path.join("movies", user_name)
             # Check if the destination directory exists, if not create it
@@ -161,6 +157,18 @@ def load_user_data():
 
 # Load user data when the application starts
 load_user_data()
+
+# Function to find the last selected movie for a specific user
+def find_last_movie_for_user(search_name):
+    for name, last_movie in last_selected_movies.items():
+        if name.lower() == search_name.lower():
+            print(f"The last selected movie for {name} was: {last_movie}")
+            return
+    print(f"No movie found for {search_name}")
+
+# Display last movie for each user on launch
+for name, last_movie in last_selected_movies.items():
+    print(f"The last selected movie for {name} was: {last_movie}")
 
 # Main loop
 while True:
