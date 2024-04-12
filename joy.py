@@ -89,8 +89,13 @@ def movie_upload():
             # Copy the movie file to the destination directory with the new name
             shutil.copy(movie_path, os.path.join(destination_dir, new_movie_name))
             print("Movie uploaded successfully!")
-            # Set the last selected movie for this user
-            last_selected_movies[user_name] = new_movie_name
+            # Check if the user already had a last selected movie
+            if user_name in last_selected_movies:
+                # Update the last selected movie only if a new movie is uploaded
+                last_selected_movies[user_name] = new_movie_name
+            else:
+                # Set the last selected movie for this user
+                last_selected_movies[user_name] = new_movie_name
         else:
             print("File not found!")
     else:
@@ -98,6 +103,7 @@ def movie_upload():
     # Simulate some processing time
     time.sleep(2)
     display_option(options[selected_option_index])  # Return to main navigation
+
 
 
 # Function to upload and rename a picture
