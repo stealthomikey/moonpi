@@ -1,11 +1,11 @@
-import mosquitto
+import paho.mqtt.client as mqtt
 
-# Define callback function for message received
+# Define callback function for when a message is received
 def on_message(client, userdata, message):
     print(f"Received message on topic {message.topic}: {message.payload.decode()}")
 
-# Create Mosquitto client instance
-client = mosquitto.Mosquitto()
+# Create MQTT client instance
+client = mqtt.Client()
 
 # Assign callback function
 client.on_message = on_message
