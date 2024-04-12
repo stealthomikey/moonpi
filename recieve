@@ -10,7 +10,7 @@ def on_message(client, userdata, msg):
     print("Received message: "+str(msg.payload))
 
 # Create a MQTT client instance
-client = mqtt.Client()
+client = mqtt.Client(protocol=mqtt.MQTTv311)  # Specify MQTT protocol version
 
 # Set callback functions
 client.on_connect = on_connect
