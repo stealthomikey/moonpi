@@ -1,0 +1,35 @@
+import paho.mqtt.client as mqtt
+
+# Define the callback function to handle incoming messages
+def on_message(client, userdata, message):
+    print("Received message:", str(message.payload.decode("utf-8")))
+
+# Define the MQTT broker address and topic
+broker_address = "<Raspberry Pi IP>"
+topic = "testTopic"
+
+# Create an MQTT client instance
+client = mqtt.Client()
+
+# Set the callback function
+client.on_message = on_message
+
+try:
+    # Connect to the MQTT broker
+    client.connect(broker_address)
+
+    # Subscribe to the topic
+    client.subscribe(topic)
+
+    # Start a loop to handle network traffic, including messages
+    client.loop_start()
+
+    # Keep the script running until interrupted
+    while True:
+        pass
+
+except KeyboardInterrupt:
+    # Handle KeyboardInterrupt (Ctrl+C) to gracefully stop the script
+    print("Exiting...")
+    client.loop_stop()
+    client.disconnect()
