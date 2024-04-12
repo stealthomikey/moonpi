@@ -6,6 +6,7 @@ import os
 import shutil
 import csv
 import time
+import threading  # Import threading module for running MQTT loop in a separate thread
 
 # Initialize Sense HAT
 sense = SenseHat()
@@ -204,6 +205,19 @@ if client.connect("192.168.87.41", 1883, 60) != 0:
 
 # MQTT subscribe to topic
 client.subscribe("moonPi")
+
+# Function to run MQTT loop in a separate thread
+def mqtt_loop():
+    try:
+        client.loop_forever()
+    except KeyboardInterrupt:
+        print("Disconnecting from MQTT broker...")
+        client.disconnect()
+
+# Start the MQTT loop in a separate thread
+mqtt_thread = threading.Thread(target=mqtt_loop)
+mqtt_thread.daemon = True
+mqtt_thread.start()
 
 # Main loop
 while True:
