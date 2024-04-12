@@ -16,8 +16,14 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-# Connect to MQTT broker
-client.connect("mqtt.example.com", 1883, 60)
+try:
+    # Connect to MQTT broker
+    client.connect("mqtt.example.com", 1883, 60)
 
-# Loop forever to receive messages
-client.loop_forever()
+    # Loop forever to receive messages
+    client.loop_forever()
+
+except KeyboardInterrupt:
+    print("Disconnecting from broker.")
+    client.disconnect()
+    client.socket().close()  # Manually close the socket
