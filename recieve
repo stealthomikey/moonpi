@@ -16,8 +16,18 @@ client = mqtt.Client()
 client.on_connect = on_connect
 client.on_message = on_message
 
-# Connect to the MQTT broker (replace 'localhost' with the IP address of your broker if it's running on a different machine)
-client.connect("localhost", 1883, 60)
+# Connect to the MQTT broker
+client.connect("192.168.1.186", 1883, 60)  # Use the IP address of your MQTT broker
 
-# Loop to maintain network connection and process incoming messages
-client.loop_forever()
+# Start the network loop
+client.loop_start()
+
+try:
+    # Keep the script running
+    while True:
+        pass
+except KeyboardInterrupt:
+    # Stop the network loop and disconnect from the MQTT broker
+    client.loop_stop()
+    client.disconnect()
+    print("Disconnected from MQTT broker")
