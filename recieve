@@ -1,29 +1,20 @@
-import paho.mqtt.client as mqtt
+import mosquitto
 
-# Define callback functions
-def on_connect(client, userdata, flags, rc):
-    print("Connected with result code "+str(rc))
-    # Subscribe to the topic
-    client.subscribe("topic/test")
+# Define callback function for message received
+def on_message(client, userdata, message):
+    print(f"Received message on topic {message.topic}: {message.payload.decode()}")
 
-def on_message(client, userdata, msg):
-    print(msg.topic+" "+str(msg.payload))
+# Create Mosquitto client instance
+client = mosquitto.Mosquitto()
 
-# Create MQTT client instance
-client = mqtt.Client()
-
-# Assign callback functions
-client.on_connect = on_connect
+# Assign callback function
 client.on_message = on_message
 
-try:
-    # Connect to MQTT broker
-    client.connect("mqtt.example.com", 1883, 60)
+# Connect to MQTT broker
+client.connect("mqtt.example.com", 1883, 60)
 
-    # Loop forever to receive messages
-    client.loop_forever()
+# Subscribe to a topic
+client.subscribe("topic/test")
 
-except KeyboardInterrupt:
-    print("Disconnecting from broker.")
-    client.disconnect()
-    client.socket().close()  # Manually close the socket
+# Loop forever to receive messages
+client.loop_forever()
