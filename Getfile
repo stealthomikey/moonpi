@@ -1,0 +1,27 @@
+from smb.SMBConnection import SMBConnection
+
+# IP address of the host Pi
+host_ip = "ip_address_of_host_pi"
+
+# Username and password for accessing the shared directory
+username = "pi"
+password = "pi"
+
+# Path to the shared directory
+shared_directory = "movies"
+
+# Create an SMBConnection object
+conn = SMBConnection(username, password, "python", "RaspberryPi", use_ntlm_v2=True)
+
+# Connect to the shared directory
+conn.connect(host_ip, 445)
+
+# List the contents of the shared directory
+file_list = conn.listPath(shared_directory, "/")
+
+# Print the filenames
+for file in file_list:
+    print(file.filename)
+
+# Disconnect from the shared directory
+conn.close()
