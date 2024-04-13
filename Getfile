@@ -1,7 +1,7 @@
 from smb.SMBConnection import SMBConnection
 
 # IP address of the host Pi
-host_ip = "ip_address_of_host_pi"
+host_ip = "192.168.87.45"
 
 # Username and password for accessing the shared directory
 username = "pi"
@@ -10,18 +10,20 @@ password = "pi"
 # Path to the shared directory
 shared_directory = "movies"
 
+directory_name = "juliusz"
+
+file_name = "falling"
+
 # Create an SMBConnection object
 conn = SMBConnection(username, password, "python", "RaspberryPi", use_ntlm_v2=True)
 
 # Connect to the shared directory
 conn.connect(host_ip, 445)
 
-# List the contents of the shared directory
-file_list = conn.listPath(shared_directory, "/")
+file_obj = open(file_name, "wb")
+conn.retrieveFile(shared_directory, f"{directory_name}/{file_name}", file_obj)
+file_obj.close()
 
-# Print the filenames
-for file in file_list:
-    print(file.filename)
+print(f"File '{file_name}' copied")
 
-# Disconnect from the shared directory
-conn.close()
+
