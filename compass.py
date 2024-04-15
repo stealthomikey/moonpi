@@ -3,6 +3,12 @@ import math
 import RPi.GPIO as GPIO
 import time
 from time import sleep
+import paho.mqtt.publish as publish
+
+broker_address = "192.168.87.41"
+port = 1883
+topic = "moonPiWhosWatching"
+message = "moonPiWhosWatching"
 
 BUZZER = 4
 
@@ -19,6 +25,7 @@ def buzz(noteFreq, duration):
        GPIO.output(BUZZER, False)
        time.sleep(halveWaveTime)
 def play():
+    publish.single(topic, message, hostname=broker_address, port=port)
     t=0
     notes=[262,294,330,262]
     duration=[0.5,0.5,0.5,0.5]
